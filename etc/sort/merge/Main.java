@@ -20,7 +20,7 @@ public class Main {
         List<Student> temp = new ArrayList<>();
 
         while (left <= mid && right <= end) {
-            if (arr.get(left).compareTo(arr.get(right)) > 0) {
+            if (arr.get(left).compareTo(arr.get(right)) < 0) {
                 temp.add(arr.get(left++));
             } else {
                 temp.add(arr.get(right++));
@@ -46,7 +46,9 @@ public class Main {
             students.add(new Student(sc.nextInt(), sc.nextInt()));
         }
         divide(students, 0, n - 1);
-
+        for(Student s : students) {
+            System.out.printf("%d %d%n", s.age, s.height);
+        }
     }
 }
 
