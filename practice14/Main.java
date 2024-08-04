@@ -15,19 +15,17 @@ public class Main {
             graph[i] = new ArrayList<>();
         }
         for (int i = 1; i <= e; i++) {
-            int s = sc.nextInt(), b = sc.nextInt(), c = sc.nextInt();
-            graph[s].add(new Graph(b, c));
+            int s = sc.nextInt(), d = sc.nextInt(), c = sc.nextInt();
+            graph[s].add(new Graph(d, c));
         }
-
-        int z = sc.nextInt(), x = sc.nextInt();
+        int z = sc.nextInt();
+        int x = sc.nextInt();
 
         int[] dist = new int[v + 1];
         Arrays.fill(dist, Integer.MAX_VALUE / 2);
         int[] last = new int[v + 1];
-
         dist[z] = 0;
         last[z] = z;
-
         for (int i = 1; i < v; i++) {
             for (int j = 1; j <= v; j++) {
                 for (Graph next : graph[j]) {
@@ -43,15 +41,16 @@ public class Main {
             for (Graph next : graph[j]) {
                 if (dist[next.dest] > dist[j] + next.cost) {
                     cycle = true;
-                    break;
+                    System.out.println("GAZUA");
+                    return;
                 }
-            }
-            if (cycle) {
-                System.out.println("GAZUA");
-                System.exit(0);
             }
         }
 
+        if (dist[x] == Integer.MAX_VALUE / 2) {
+            System.out.println("RAGE");
+            return;
+        }
         System.out.println(dist[x]);
         int curr = x;
         List<Integer> path = new ArrayList<>();

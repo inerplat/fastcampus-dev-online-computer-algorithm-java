@@ -2,44 +2,52 @@ package practice12;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.PriorityQueue;
 import java.util.Scanner;
 
 public class Main {
+
+    static void init(int[] parent, int n) {
+        for (int i = 1; i <= n; i++) {
+            parent[i] = i;
+        }
+    }
+
+    static int find(int[] parent, int x) {
+        if (parent[x] == x) return x;
+        return parent[x] = find(parent, parent[x]);
+    }
+
+    static void union(int[] parent, int a, int b) {
+        int x = find(parent, a);
+        int y = find(parent, b);
+        parent[y] = x;
+    }
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         int n = sc.nextInt();
         int m = sc.nextInt();
-        List<Graph>[] g = new ArrayList[n + 1];
-        for (int i = 1; i <= n; i++) {
-            g[i] = new ArrayList<>();
-        }
+        List<Edge> g = new ArrayList<>();
 
         for (int i = 1; i <= m; i++) {
             int u = sc.nextInt();
             int v = sc.nextInt();
             int c = sc.nextInt();
-            g[u].add(new Graph(v, c));
-            g[v].add(new Graph(u, c));
+            g.add(new Edge(u, v, c));
         }
-        boolean[] chk = new boolean[n + 1];
+        g.sort(null);
+        int[] par = new int[n + 1];
         int ans = 0;
-        PriorityQueue<Graph> pq = new PriorityQueue<>((x, y) -> x.cost - y.cost);
-        pq.offer(new Graph(1, 0));
-        while (!pq.isEmpty()) {
-            Graph cur = pq.poll();
-            int dest = cur.dest;
-            int cost = cur.cost;
-            if (!chk[dest]) {
-                chk[dest] = true;
-                ans += cost;
-                for (Graph nxt : g[dest]) {
-                    pq.offer(nxt);
-                }
+        init(par, n);
+        for (Edge x : g) {
+            if (find(par, x.src) != find(par, x.dest)) {
+                ans += x.cost;
+                union(par, x.src, x.dest);
             }
         }
-        for(int i = 1; i <= n; i++){
-            if(!chk[i]){
+        int root = find(par, 1);
+        for (int i = 2; i <= n; i++) {
+            if (find(par, i) != root) {
                 System.out.println(-1);
                 return;
             }
@@ -48,17 +56,19 @@ public class Main {
     }
 }
 
+class Edge implements Comparable<Edge> {
+    int src;
+    int dest;
+    int cost;
 
-class Graph implements Comparable<Graph> {
-    public int dest;
-    public int cost;
-    public Graph(int d, int c) {
-        dest = d;
-        cost = c;
+    public Edge(int s, int d, int c) {
+        this.src = s;
+        this.dest = d;
+        this.cost = c;
     }
 
     @Override
-    public int compareTo(Graph o) {
+    public int compareTo(Edge o) {
         return this.cost - o.cost;
     }
 }

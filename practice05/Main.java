@@ -1,9 +1,6 @@
 package practice05;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,9 +36,11 @@ public class Main {
                 bucket[i].clear();
             }
             exp *= 10;
+
         }
-        BufferedWriter  bw = new BufferedWriter(new java.io.OutputStreamWriter(System.out));
-        for (int i = 1; i <= n; i++) {
+
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        for(int i =1 ; i<=n; i++) {
             bw.write(arr[i] + " ");
         }
         bw.flush();

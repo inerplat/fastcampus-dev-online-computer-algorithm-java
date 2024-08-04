@@ -11,10 +11,7 @@ public class Main {
         System.out.println(rabinKarp(pattern, text));
     }
 
-    private static final int D = 256;
-    private static final int M = Integer.MAX_VALUE;
-
-    private static int rabinKarp(String pattern, String text) {
+    static int rabinKarp(String pattern, String text) {
         int m = pattern.length();
         int n = text.length();
         long patternHash = hash(pattern, m);
@@ -24,38 +21,39 @@ public class Main {
         if (patternHash == textHash && checkEquality(text, pattern, 0)) {
             count++;
         }
-
         long basePower = 1;
-        for (int i = 1; i <= m - 1; i++) {
+        for (int i = 1; i < m; i++) {
             basePower = (basePower * D) % M;
         }
-
         for (int i = 1; i <= n - m; i++) {
-            textHash = (textHash - text.charAt(i - 1) * basePower % M + M) % M;
+            textHash = ((textHash - text.charAt(i - 1) * basePower % M) + M) % M;
             textHash = textHash * D % M;
             textHash = (textHash + text.charAt(i + m - 1)) % M;
             if (patternHash == textHash && checkEquality(text, pattern, i)) {
                 count++;
             }
         }
-
         return count;
     }
 
-    private static long hash(String str, int length) {
-        long hash = 0;
-        for (int i = 0; i < length; i++) {
-            hash = (hash * D + str.charAt(i)) % M;
-        }
-        return hash;
-    }
-
-    private static boolean checkEquality(String text, String pattern, int start) {
+    static boolean checkEquality(String text, String pattern, int start) {
         for (int i = 0; i < pattern.length(); i++) {
-            if (text.charAt(start + i) != pattern.charAt(i)) {
+            if (pattern.charAt(i) != text.charAt(start + i)) {
                 return false;
             }
         }
         return true;
     }
+
+    static int D = 257;
+    static Long M = Long.MAX_VALUE / D;
+
+    static long hash(String str, int length) {
+        long h = 0;
+        for (int i = 0; i < length; i++) {
+            h = (h * D + str.charAt(i)) % M;
+        }
+        return h;
+    }
+
 }

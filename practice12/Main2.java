@@ -1,63 +1,64 @@
 package practice12;
 
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 
 public class Main2 {
-    static void init(int[] parent, int n) {
-        for (int i = 1; i <= n; i++)
-            parent[i] = i;
-    }
-    static int find(int[] parent, int x){
-        if (parent[x] == x) return x;
-        return parent[x] = find(parent, parent[x]);
-    }
-    static void union(int[] parent, int a, int b) {
-        int x = find(parent, a);
-        int y = find(parent, b);
-        parent[y] = x;
-    }
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         int n = sc.nextInt();
         int m = sc.nextInt();
-        List<Graph2> g = new ArrayList<Graph2>();
-
+        List<Graph>[] g = new ArrayList[n + 1];
+        for (int i = 1; i <= n; i++) {
+            g[i] = new ArrayList<>();
+        }
         for (int i = 1; i <= m; i++) {
             int u = sc.nextInt();
             int v = sc.nextInt();
             int c = sc.nextInt();
-            g.add(new Graph2(u, v, c));
+            g[u].add(new Graph(v, c));
+            g[v].add(new Graph(u, c));
         }
+        boolean[] chk = new boolean[n + 1];
         int ans = 0;
-        int[] par = new int[n + 1];
-        for (int i = 1; i <= n; i++) {
-            par[i] = i;
+        PriorityQueue<Graph> pq = new PriorityQueue<>();
+        pq.offer(new Graph(1, 0));
+        while (!pq.isEmpty()) {
+            Graph cur = pq.poll();
+            int dest = cur.dest;
+            int cost = cur.cost;
+            if (!chk[dest]) {
+                chk[dest] = true;
+                ans += cost;
+                for (Graph nxt : g[dest]) {
+                    pq.offer(nxt);
+                }
+            }
         }
-        g.sort(null);
-        for (Graph2 x : g) {
-            if (find(par, x.src) != find(par, x.dest)) {
-                ans += x.cost;
-                union(par, x.src, x.dest);
+        for (int i = 1; i <= n; i++) {
+            if (!chk[i]) {
+                System.out.println(-1);
+                return;
             }
         }
         System.out.println(ans);
     }
 }
 
+class Graph implements Comparable<Graph> {
+    int dest;
+    int cost;
 
-class Graph2 implements Comparable<Graph2> {
-    public int src;
-    public int dest;
-    public int cost;
-    public Graph2(int s, int d, int c) {
-        this.src = s;
-        this.dest = d;
-        this.cost = c;
+    public Graph(int d, int c) {
+        dest = d;
+        cost = c;
     }
+
     @Override
-    public int compareTo(Graph2 o) {
+    public int compareTo(Graph o) {
         return this.cost - o.cost;
     }
 }

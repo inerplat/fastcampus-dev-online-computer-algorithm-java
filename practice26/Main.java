@@ -7,30 +7,30 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int n = scanner.nextInt();
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
         List<Point> points = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            int x = scanner.nextInt();
-            int y = scanner.nextInt();
-            points.add(new Point(x, y, i + 1));
+        for (int i = 1; i <= n; i++) {
+            int x = sc.nextInt();
+            int y = sc.nextInt();
+            points.add(new Point(x, y, i));
         }
-
         points.sort(Comparator.comparingInt(p -> p.x));
-
         Pair closest = divide(points, 0, n - 1);
-        if (closest.first.index < closest.second.index)
+        if (closest.first.index < closest.second.index) {
             System.out.println(closest.first.index + " " + closest.second.index);
-        else System.out.println(closest.second.index + " " + closest.first.index);
+        } else {
+            System.out.println(closest.second.index + " " + closest.first.index);
+        }
     }
 
-    public static int dist(Point p, Point q) {
+    static int dist(Point p, Point q) {
         return (p.x - q.x) * (p.x - q.x) + (p.y - q.y) * (p.y - q.y);
     }
 
     static Pair bruteForce(List<Point> points, int start, int end) {
         int minDist = Integer.MAX_VALUE;
-        Pair closestPair = new Pair(points.get(start), points.get(start));
+        Pair closestPair = null;
         for (int i = start; i < end; i++) {
             for (int j = i + 1; j <= end; j++) {
                 int d = dist(points.get(i), points.get(j));
@@ -43,18 +43,15 @@ public class Main {
         return closestPair;
     }
 
-    public static Pair divide(List<Point> points, int start, int end) {
+    static Pair divide(List<Point> points, int start, int end) {
         if (end - start <= 3) {
             return bruteForce(points, start, end);
         }
-
         int mid = (start + end) / 2;
         Pair leftArea = divide(points, start, mid);
         Pair rightArea = divide(points, mid + 1, end);
-
         int leftDist = dist(leftArea.first, leftArea.second);
         int rightDist = dist(rightArea.first, rightArea.second);
-
         int d = Math.min(leftDist, rightDist);
         Pair minPair = leftDist < rightDist ? leftArea : rightArea;
 
@@ -66,7 +63,6 @@ public class Main {
             }
         }
         band.sort(Comparator.comparingInt(p -> p.y));
-
         for (int i = 0; i < band.size(); i++) {
             for (int j = i + 1; j < band.size() && j <= i + 4; j++) {
                 int newDist = dist(band.get(i), band.get(j));
@@ -76,8 +72,8 @@ public class Main {
                 }
             }
         }
-
         return minPair;
+
     }
 }
 

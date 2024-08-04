@@ -5,28 +5,24 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        Scanner scanner = new java.util.Scanner(System.in);
-
-        String pattern = scanner.nextLine();
-        String text = scanner.nextLine();
-
-        int count = search(pattern, text);
-        System.out.println(count);
+        Scanner sc = new Scanner(System.in);
+        String pattern = sc.nextLine();
+        String text = sc.nextLine();
+        System.out.println(search(pattern, text));
     }
 
-    public static int search(String pattern, String text) {
+    static int search(String pattern, String text) {
         int m = pattern.length();
         int n = text.length();
         int[] f = failure(pattern);
 
-        int i = 0;
-        int j = 0;
+        int i = 0; // text
+        int j = 0; // pattern
         int count = 0;
-
         while (i < n) {
             if (pattern.charAt(j) == text.charAt(i)) {
-                j++;
                 i++;
+                j++;
             }
             if (j == m) {
                 count++;
@@ -39,16 +35,15 @@ public class Main {
                 }
             }
         }
-
         return count;
     }
 
-    public static int[] failure(String pattern) {
+    static int[] failure(String pattern) {
         int m = pattern.length();
         int[] f = new int[m];
         int length = 0;
-        int i = 1;
         f[0] = 0;
+        int i = 1;
 
         while (i < m) {
             if (pattern.charAt(i) == pattern.charAt(length)) {
